@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var expressHbs = require('express-handlebars');
 var mongoose = require('mongoose')
 var routes = require('./routes/index');
+var userRoutes = require('./routes/user');
 var session = require('express-session');
 var app = express();
 var passport = require('passport');
@@ -32,7 +33,13 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function(req, res, next) {
+  res.locals.login = req.isAuthenticated()
+  next()
+})
+
 app.use('/', routes);
+app.use('/user', userRoutes)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
